@@ -1,0 +1,4 @@
+/* Estilos mínimos para panel */
+body { background: #f8f9fa; }
+.toast { min-width: 280px; }
+.table td, .table th { vertical-align: middle; }

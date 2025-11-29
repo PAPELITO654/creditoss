@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Iconos PWA</title>
+</head>
+<body>
+    <h1>Generador de Iconos para PWA</h1>
+    <p>Esta página genera los iconos PNG necesarios para la PWA.</p>
+    
+    <div id="icons"></div>
+    
+    <script>
+        // SVG del icono
+        const svgContent = `
+        <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#007bff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#0056b3;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          
+          <rect width="512" height="512" rx="80" fill="url(#grad1)"/>
+          
+          <rect x="100" y="180" width="312" height="200" rx="20" fill="white"/>
+          <rect x="120" y="200" width="272" height="160" rx="15" fill="#f8f9fa"/>
+          
+          <rect x="140" y="220" width="40" height="30" rx="5" fill="#ffc107"/>
+          
+          <rect x="200" y="220" width="120" height="8" rx="4" fill="#6c757d"/>
+          <rect x="200" y="240" width="80" height="8" rx="4" fill="#6c757d"/>
+          <rect x="200" y="260" width="100" height="8" rx="4" fill="#6c757d"/>
+          
+          <rect x="140" y="300" width="200" height="12" rx="6" fill="#343a40"/>
+          
+          <circle cx="256" cy="100" r="30" fill="white"/>
+          <text x="256" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#007bff">CE</text>
+          
+          <circle cx="400" cy="120" r="15" fill="white" opacity="0.3"/>
+          <circle cx="450" cy="200" r="20" fill="white" opacity="0.2"/>
+          <circle cx="80" cy="300" r="25" fill="white" opacity="0.2"/>
+        </svg>`;
+
+        // Tamaños de iconos necesarios para PWA
+        const sizes = [16, 32, 48, 72, 96, 128, 144, 152, 192, 384, 512];
+        
+        function generateIcon(size) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Crear imagen desde SVG
+            const img = new Image();
+            const svgBlob = new Blob([svgContent], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(svgBlob);
+            
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, size, size);
+                
+                // Convertir a PNG y descargar
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.download = `icon-${size}x${size}.png`;
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                }, 'image/png');
+                
+                URL.revokeObjectURL(url);
+            };
+            
+            img.src = url;
+        }
+        
+        // Generar todos los iconos
+        sizes.forEach(size => {
+            setTimeout(() => generateIcon(size), size * 10);
+        });
+        
+        // Mostrar preview
+        document.getElementById('icons').innerHTML = `
+            <h2>Preview del Icono:</h2>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                ${sizes.map(size => `
+                    <div style="text-align: center;">
+                        <div style="width: ${Math.min(size, 128)}px; height: ${Math.min(size, 128)}px; border: 1px solid #ccc; margin: 0 auto;">
+                            <img src="data:image/svg+xml;base64,${btoa(svgContent)}" width="${Math.min(size, 128)}" height="${Math.min(size, 128)}" />
+                        </div>
+                        <p>${size}x${size}</p>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    </script>
+</body>
+</html>

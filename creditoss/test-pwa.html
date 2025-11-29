@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test PWA - Créditos Express</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .test-item h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f3ff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test de PWA - Créditos Express</h1>
+        
+        <div class="test-item">
+            <h3>1. Service Worker</h3>
+            <div id="sw-status" class="status">Verificando...</div>
+            <button onclick="testServiceWorker()">Probar Service Worker</button>
+        </div>
+
+        <div class="test-item">
+            <h3>2. Manifest</h3>
+            <div id="manifest-status" class="status">Verificando...</div>
+            <button onclick="testManifest()">Probar Manifest</button>
+        </div>
+
+        <div class="test-item">
+            <h3>3. Instalación PWA</h3>
+            <div id="install-status" class="status">Verificando...</div>
+            <button onclick="testInstallation()">Probar Instalación</button>
+        </div>
+
+        <div class="test-item">
+            <h3>4. Cache</h3>
+            <div id="cache-status" class="status">Verificando...</div>
+            <button onclick="testCache()">Probar Cache</button>
+        </div>
+
+        <div class="test-item">
+            <h3>5. Conexión</h3>
+            <div id="connection-status" class="status">Verificando...</div>
+            <button onclick="testConnection()">Probar Conexión</button>
+        </div>
+
+        <div class="test-item">
+            <h3>6. Funcionalidades Offline</h3>
+            <div id="offline-status" class="status">Verificando...</div>
+            <button onclick="testOffline()">Probar Offline</button>
+        </div>
+
+        <div class="test-results">
+            <h3>📊 Resultados del Test</h3>
+            <div id="test-results"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button onclick="runAllTests()" style="background: #28a745; font-size: 16px; padding: 15px 30px;">
+                🚀 Ejecutar Todos los Tests
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let testResults = [];
+
+        function addResult(test, status, message) {
+            testResults.push({ test, status, message });
+            updateResultsDisplay();
+        }
+
+        function updateResultsDisplay() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = testResults.map(result => 
+                `<div class="status ${result.status}">${result.test}: ${result.message}</div>`
+            ).join('');
+        }
+
+        async function testServiceWorker() {
+            const statusDiv = document.getElementById('sw-status');
+            
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    if (registration) {
+                        statusDiv.textContent = '✅ Service Worker registrado';
+                        statusDiv.className = 'status success';
+                        addResult('Service Worker', 'success', 'Registrado correctamente');
+                    } else {
+                        statusDiv.textContent = '❌ Service Worker no registrado';
+                        statusDiv.className = 'status error';
+                        addResult('Service Worker', 'error', 'No registrado');
+                    }
+                } catch (error) {
+                    statusDiv.textContent = '❌ Error al verificar Service Worker';
+                    statusDiv.className = 'status error';
+                    addResult('Service Worker', 'error', error.message);
+                }
+            } else {
+                statusDiv.textContent = '❌ Service Worker no soportado';
+                statusDiv.className = 'status error';
+                addResult('Service Worker', 'error', 'No soportado por el navegador');
+            }
+        }
+
+        async function testManifest() {
+            const statusDiv = document.getElementById('manifest-status');
+            
+            try {
+                const response = await fetch('./manifest.json');
+                if (response.ok) {
+                    const manifest = await response.json();
+                    statusDiv.textContent = '✅ Manifest válido';
+                    statusDiv.className = 'status success';
+                    addResult('Manifest', 'success', `Nombre: ${manifest.name}`);
+                } else {
+                    statusDiv.textContent = '❌ Error al cargar manifest';
+                    statusDiv.className = 'status error';
+                    addResult('Manifest', 'error', 'No se pudo cargar');
+                }
+            } catch (error) {
+                statusDiv.textContent = '❌ Error al verificar manifest';
+                statusDiv.className = 'status error';
+                addResult('Manifest', 'error', error.message);
+            }
+        }
+
+        function testInstallation() {
+            const statusDiv = document.getElementById('install-status');
+            
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                statusDiv.textContent = '✅ PWA instalada';
+                statusDiv.className = 'status success';
+                addResult('Instalación', 'success', 'PWA instalada como app');
+            } else if (window.navigator.standalone === true) {
+                statusDiv.textContent = '✅ PWA instalada (iOS)';
+                statusDiv.className = 'status success';
+                addResult('Instalación', 'success', 'PWA instalada en iOS');
+            } else {
+                statusDiv.textContent = '⚠️ PWA no instalada';
+                statusDiv.className = 'status warning';
+                addResult('Instalación', 'warning', 'PWA no instalada (puede instalarse)');
+            }
+        }
+
+        async function testCache() {
+            const statusDiv = document.getElementById('cache-status');
+            
+            if ('caches' in window) {
+                try {
+                    const cacheNames = await caches.keys();
+                    const cacheCount = cacheNames.length;
+                    
+                    if (cacheCount > 0) {
+                        statusDiv.textContent = `✅ ${cacheCount} caches encontrados`;
+                        statusDiv.className = 'status success';
+                        addResult('Cache', 'success', `${cacheCount} caches activos`);
+                    } else {
+                        statusDiv.textContent = '⚠️ No hay caches';
+                        statusDiv.className = 'status warning';
+                        addResult('Cache', 'warning', 'No hay caches activos');
+                    }
+                } catch (error) {
+                    statusDiv.textContent = '❌ Error al verificar cache';
+                    statusDiv.className = 'status error';
+                    addResult('Cache', 'error', error.message);
+                }
+            } else {
+                statusDiv.textContent = '❌ Cache API no soportada';
+                statusDiv.className = 'status error';
+                addResult('Cache', 'error', 'Cache API no soportada');
+            }
+        }
+
+        function testConnection() {
+            const statusDiv = document.getElementById('connection-status');
+            
+            if (navigator.onLine) {
+                statusDiv.textContent = '✅ Conectado a internet';
+                statusDiv.className = 'status success';
+                addResult('Conexión', 'success', 'En línea');
+            } else {
+                statusDiv.textContent = '❌ Sin conexión a internet';
+                statusDiv.className = 'status error';
+                addResult('Conexión', 'error', 'Sin conexión');
+            }
+        }
+
+        async function testOffline() {
+            const statusDiv = document.getElementById('offline-status');
+            
+            try {
+                // Simular modo offline
+                const response = await fetch('./index.html', { 
+                    method: 'HEAD',
+                    cache: 'force-cache'
+                });
+                
+                if (response.ok) {
+                    statusDiv.textContent = '✅ Funcionalidad offline disponible';
+                    statusDiv.className = 'status success';
+                    addResult('Offline', 'success', 'Páginas disponibles offline');
+                } else {
+                    statusDiv.textContent = '⚠️ Funcionalidad offline limitada';
+                    statusDiv.className = 'status warning';
+                    addResult('Offline', 'warning', 'Funcionalidad offline limitada');
+                }
+            } catch (error) {
+                statusDiv.textContent = '❌ Error en funcionalidad offline';
+                statusDiv.className = 'status error';
+                addResult('Offline', 'error', error.message);
+            }
+        }
+
+        async function runAllTests() {
+            testResults = [];
+            updateResultsDisplay();
+            
+            await testServiceWorker();
+            await testManifest();
+            testInstallation();
+            await testCache();
+            testConnection();
+            await testOffline();
+            
+            // Mostrar resumen
+            const successCount = testResults.filter(r => r.status === 'success').length;
+            const totalCount = testResults.length;
+            
+            addResult('RESUMEN', 'info', `${successCount}/${totalCount} tests exitosos`);
+        }
+
+        // Ejecutar tests automáticamente al cargar
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+</body>
+</html>

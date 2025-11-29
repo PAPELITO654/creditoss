@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Instalación PWA - Créditos Express</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .status {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success { background: rgba(40, 167, 69, 0.8); }
+        .error { background: rgba(220, 53, 69, 0.8); }
+        .warning { background: rgba(255, 193, 7, 0.8); color: #000; }
+        .info { background: rgba(13, 202, 240, 0.8); }
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .install-button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            font-size: 18px;
+            padding: 15px 30px;
+            margin: 20px 0;
+        }
+        .install-button:hover {
+            background: linear-gradient(45deg, #218838, #1ea085);
+        }
+        .browser-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .browser-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .browser-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .step-number {
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Test de Instalación PWA</h1>
+        <p class="lead">Verifica que tu PWA se puede instalar correctamente en diferentes navegadores</p>
+
+        <div class="test-section">
+            <h3>🔍 Estado Actual de la PWA</h3>
+            <div id="pwa-status" class="status info">Verificando...</div>
+            <div id="install-status" class="status info">Verificando...</div>
+            <div id="browser-support" class="status info">Verificando...</div>
+        </div>
+
+        <div class="test-section">
+            <h3>📲 Instalar PWA</h3>
+            <button id="installBtn" class="install-button" onclick="installPWA()">
+                📱 Instalar Créditos Express
+            </button>
+            <div id="install-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🌐 Compatibilidad por Navegador</h3>
+            <div class="browser-info">
+                <div class="browser-card">
+                    <div class="browser-icon">🌐</div>
+                    <h4>Chrome/Edge</h4>
+                    <div id="chrome-support" class="status info">Verificando...</div>
+                </div>
+                <div class="browser-card">
+                    <div class="browser-icon">🦊</div>
+                    <h4>Firefox</h4>
+                    <div id="firefox-support" class="status info">Verificando...</div>
+                </div>
+                <div class="browser-card">
+                    <div class="browser-icon">🧭</div>
+                    <h4>Safari</h4>
+                    <div id="safari-support" class="status info">Verificando...</div>
+                </div>
+                <div class="browser-card">
+                    <div class="browser-icon">📱</div>
+                    <h4>Móvil</h4>
+                    <div id="mobile-support" class="status info">Verificando...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Instrucciones de Instalación</h3>
+            <div class="instructions">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Chrome/Edge (Desktop):</strong> Busca el ícono de instalación en la barra de direcciones o ve al menú → "Instalar Créditos Express"
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Chrome (Android):</strong> Toca el menú (⋮) → "Agregar a pantalla de inicio" o busca el ícono de instalación
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Safari (iPhone/iPad):</strong> Toca el botón "Compartir" → "Agregar a pantalla de inicio"
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Firefox:</strong> Busca el ícono de instalación en la barra de direcciones
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Información Técnica</h3>
+            <div id="tech-info"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button onclick="runAllTests()" style="background: linear-gradient(45deg, #007bff, #0056b3);">
+                🚀 Ejecutar Todos los Tests
+            </button>
+            <button onclick="window.location.href='./index.html'" style="background: linear-gradient(45deg, #28a745, #20c997);">
+                🏠 Ir a la App Principal
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt;
+        let installButton = null;
+
+        // Detectar navegador
+        function detectBrowser() {
+            const userAgent = navigator.userAgent;
+            if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) {
+                return 'Chrome';
+            } else if (userAgent.includes('Edg')) {
+                return 'Edge';
+            } else if (userAgent.includes('Firefox')) {
+                return 'Firefox';
+            } else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) {
+                return 'Safari';
+            } else {
+                return 'Otro';
+            }
+        }
+
+        // Detectar si es móvil
+        function isMobile() {
+            return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // Verificar soporte PWA
+        function checkPWASupport() {
+            const support = {
+                serviceWorker: 'serviceWorker' in navigator,
+                manifest: 'onbeforeinstallprompt' in window,
+                pushManager: 'PushManager' in window,
+                cache: 'caches' in window,
+                notification: 'Notification' in window
+            };
+            return support;
+        }
+
+        // Verificar si la PWA está instalada
+        function isAppInstalled() {
+            return window.matchMedia('(display-mode: standalone)').matches ||
+                   window.navigator.standalone === true;
+        }
+
+        // Actualizar estado de la PWA
+        function updatePWAStatus() {
+            const statusDiv = document.getElementById('pwa-status');
+            const installDiv = document.getElementById('install-status');
+            const browserDiv = document.getElementById('browser-support');
+            
+            const isInstalled = isAppInstalled();
+            const support = checkPWASupport();
+            const browser = detectBrowser();
+            const mobile = isMobile();
+            
+            // Estado de instalación
+            if (isInstalled) {
+                statusDiv.textContent = '✅ PWA instalada correctamente';
+                statusDiv.className = 'status success';
+            } else {
+                statusDiv.textContent = '⚠️ PWA no instalada (se puede instalar)';
+                statusDiv.className = 'status warning';
+            }
+            
+            // Estado de instalación
+            if (deferredPrompt) {
+                installDiv.textContent = '✅ Listo para instalar';
+                installDiv.className = 'status success';
+            } else if (isInstalled) {
+                installDiv.textContent = '✅ Ya está instalada';
+                installDiv.className = 'status success';
+            } else {
+                installDiv.textContent = '⚠️ Instalación manual requerida';
+                installDiv.className = 'status warning';
+            }
+            
+            // Soporte del navegador
+            const supportCount = Object.values(support).filter(Boolean).length;
+            const totalSupport = Object.keys(support).length;
+            
+            if (supportCount === totalSupport) {
+                browserDiv.textContent = `✅ Soporte completo (${browser})`;
+                browserDiv.className = 'status success';
+            } else if (supportCount >= totalSupport * 0.7) {
+                browserDiv.textContent = `⚠️ Soporte parcial (${browser})`;
+                browserDiv.className = 'status warning';
+            } else {
+                browserDiv.textContent = `❌ Soporte limitado (${browser})`;
+                browserDiv.className = 'status error';
+            }
+        }
+
+        // Verificar compatibilidad por navegador
+        function checkBrowserCompatibility() {
+            const support = checkPWASupport();
+            const browser = detectBrowser();
+            const mobile = isMobile();
+            
+            // Chrome/Edge
+            const chromeSupport = document.getElementById('chrome-support');
+            if (browser === 'Chrome' || browser === 'Edge') {
+                chromeSupport.textContent = '✅ Detectado';
+                chromeSupport.className = 'status success';
+            } else {
+                chromeSupport.textContent = '⚠️ No detectado';
+                chromeSupport.className = 'status warning';
+            }
+            
+            // Firefox
+            const firefoxSupport = document.getElementById('firefox-support');
+            if (browser === 'Firefox') {
+                firefoxSupport.textContent = '✅ Detectado';
+                firefoxSupport.className = 'status success';
+            } else {
+                firefoxSupport.textContent = '⚠️ No detectado';
+                firefoxSupport.className = 'status warning';
+            }
+            
+            // Safari
+            const safariSupport = document.getElementById('safari-support');
+            if (browser === 'Safari') {
+                safariSupport.textContent = '✅ Detectado';
+                safariSupport.className = 'status success';
+            } else {
+                safariSupport.textContent = '⚠️ No detectado';
+                safariSupport.className = 'status warning';
+            }
+            
+            // Móvil
+            const mobileSupport = document.getElementById('mobile-support');
+            if (mobile) {
+                mobileSupport.textContent = '✅ Dispositivo móvil';
+                mobileSupport.className = 'status success';
+            } else {
+                mobileSupport.textContent = '⚠️ Dispositivo desktop';
+                mobileSupport.className = 'status warning';
+            }
+        }
+
+        // Mostrar información técnica
+        function showTechInfo() {
+            const techDiv = document.getElementById('tech-info');
+            const support = checkPWASupport();
+            const browser = detectBrowser();
+            const mobile = isMobile();
+            
+            techDiv.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div>
+                        <strong>Navegador:</strong><br>
+                        <span class="status info">${browser}</span>
+                    </div>
+                    <div>
+                        <strong>Dispositivo:</strong><br>
+                        <span class="status ${mobile ? 'success' : 'warning'}">${mobile ? 'Móvil' : 'Desktop'}</span>
+                    </div>
+                    <div>
+                        <strong>Service Worker:</strong><br>
+                        <span class="status ${support.serviceWorker ? 'success' : 'error'}">${support.serviceWorker ? 'Soportado' : 'No soportado'}</span>
+                    </div>
+                    <div>
+                        <strong>Manifest:</strong><br>
+                        <span class="status ${support.manifest ? 'success' : 'error'}">${support.manifest ? 'Soportado' : 'No soportado'}</span>
+                    </div>
+                    <div>
+                        <strong>Cache API:</strong><br>
+                        <span class="status ${support.cache ? 'success' : 'error'}">${support.cache ? 'Soportado' : 'No soportado'}</span>
+                    </div>
+                    <div>
+                        <strong>Notificaciones:</strong><br>
+                        <span class="status ${support.notification ? 'success' : 'error'}">${support.notification ? 'Soportado' : 'No soportado'}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Instalar PWA
+        async function installPWA() {
+            const resultDiv = document.getElementById('install-result');
+            
+            if (deferredPrompt) {
+                try {
+                    resultDiv.innerHTML = '<div class="status info">Iniciando instalación...</div>';
+                    
+                    deferredPrompt.prompt();
+                    const choiceResult = await deferredPrompt.userChoice;
+                    
+                    if (choiceResult.outcome === 'accepted') {
+                        resultDiv.innerHTML = '<div class="status success">✅ PWA instalada exitosamente!</div>';
+                        updatePWAStatus();
+                    } else {
+                        resultDiv.innerHTML = '<div class="status warning">⚠️ Instalación cancelada por el usuario</div>';
+                    }
+                    
+                    deferredPrompt = null;
+                } catch (error) {
+                    resultDiv.innerHTML = `<div class="status error">❌ Error durante la instalación: ${error.message}</div>`;
+                }
+            } else {
+                resultDiv.innerHTML = '<div class="status warning">⚠️ Instalación manual requerida. Sigue las instrucciones arriba.</div>';
+            }
+        }
+
+        // Ejecutar todos los tests
+        function runAllTests() {
+            updatePWAStatus();
+            checkBrowserCompatibility();
+            showTechInfo();
+        }
+
+        // Event listeners
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('beforeinstallprompt event fired');
+            e.preventDefault();
+            deferredPrompt = e;
+            updatePWAStatus();
+        });
+
+        window.addEventListener('appinstalled', (e) => {
+            console.log('PWA instalada');
+            updatePWAStatus();
+        });
+
+        // Inicializar
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+</body>
+</html>
+
+
+
